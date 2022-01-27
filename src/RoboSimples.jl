@@ -28,14 +28,14 @@ function NRoboClient(ip="192.168.0.140", port=9543)
 end
 
 
-AbstractActuators.move(dev::NRoboClient, mm, ax; r=false) =
+AbstractActuators.move(dev::NRoboClient, ax, mm; r=false) =
     dev.server["move"](mm, string(ax), r)
 
-AbstractActuators.move(dev::NRoboClient, mm, ax::Integer; r=false) =
+AbstractActuators.move(dev::NRoboClient, ax::Integer, mm; r=false) =
     move(dev, mm, dev.axes[ax]; r=r)
 
-function AbstractActuators.move(dev::NRoboClient, x::AbstractVector,
-                                axes=AbstractVector; r=false)
+function AbstractActuators.move(dev::NRoboClient, axes::AbstractVector,
+                                x=AbstractVector; r=false)
     ndof = length(axes)
 
     for i in 1:ndof
@@ -142,26 +142,26 @@ end
 
 AbstractActuators.numaxes(dev::NRoboTest) = dev.n
 
-function AbstractActuators.move(dev::NRoboTest, mm, ax::Integer; r=false)
+function AbstractActuators.move(dev::NRoboTest, ax::Integer, mm; r=false)
     if r
         dev.x[ax] += mm
     else
         dev.x[ax] = mm
     end
-    
+    sleep(dev.Δt)
     println("Position: $ax -> $(dev.axes[ax]) = $(dev.x[ax])")
 end
 
-AbstractActuators.move(dev::NRoboTest, mm, ax; r=false) =
-    move(dev, mm, dev.axidx[string(ax)]; r=r)
+AbstractActuators.move(dev::NRoboTest, ax, mm; r=false) =
+    move(dev, dev.axidx[string(ax)], mm; r=r)
     
 
-function AbstractActuators.move(dev::NRoboTest, x::AbstractVector,
-                                axes::AbstractVector; r=false)
+function AbstractActuators.move(dev::NRoboTest, axes::AbstractVector,
+                                x::AbstractVector; r=false)
     ndof = length(axes)
 
     for i in 1:ndof
-        move(dev, x[i], axes[i]; r=r)
+        move(dev, axes[i], x[i]; r=r)
     end
     return
 end
