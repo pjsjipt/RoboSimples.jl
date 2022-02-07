@@ -4,7 +4,7 @@ using PyCall
 using AbstractActuators
 
 export NRoboClient, NRoboTest
-export move, moveX, moveY, moveZ, position, setreference
+export move, moveX, moveY, moveZ, devposition, setreference
 export rmove, rmoveX, rmoveY, rmoveZ
 export positionX, positionY, positionZ
 export setreferenceX, setreferenceY, setreferenceZ
@@ -57,7 +57,7 @@ AbstractActuators.rmoveY(dev::NRoboClient, mm) = dev.server["rmoveY"](mm)
 AbstractActuators.rmoveZ(dev::NRoboClient, mm) = dev.server["rmoveZ"](mm)
 
 import Base
-function AbstractActuators.position(dev::NRoboClient; pulses=false)
+function AbstractActuators.devposition(dev::NRoboClient; pulses=false)
     x = dev.server["position"]("x", pulses)
     y = dev.server["position"]("y", pulses)
     z = dev.server["position"]("z", pulses)
@@ -65,33 +65,33 @@ function AbstractActuators.position(dev::NRoboClient; pulses=false)
     return Dict{String,Float64}("x"=>x, "y"=>y, "z"=>z)
 end
 
-AbstractActuators.position(dev::NRoboClient, ax; pulses=false) =
+AbstractActuators.devposition(dev::NRoboClient, ax; pulses=false) =
     dev.server["position"](string(ax), pulses)
-AbstractActuators.position(dev::NRoboClient, ax::Integer; pulses=false) =
-    position(dev, dev.axes[ax]; pulses=pulses)
+AbstractActuators.devposition(dev::NRoboClient, ax::Integer; pulses=false) =
+    devposition(dev, dev.axes[ax]; pulses=pulses)
 
-function AbstractActuators.position(dev::NRoboClient, axes::AbstractVector;
-                                    pulses=false) 
+function AbstractActuators.devposition(dev::NRoboClient, axes::AbstractVector;
+                                       pulses=false) 
     ndof = length(axes)
 
     if ndof == 1
-        return [position(dev, dev.axes[axes[1]]; pulses=pulse)]
+        return [devposition(dev, dev.axes[axes[1]]; pulses=pulse)]
     elseif ndof == 2
-        return [position(dev, dev.axes[axes[1]]; pulses=pulse),
-                position(dev, dev.axes[axes[2]]; pulses=pulse)]
+        return [devposition(dev, dev.axes[axes[1]]; pulses=pulse),
+                devposition(dev, dev.axes[axes[2]]; pulses=pulse)]
     else
-        return [position(dev, dev.axes[axes[1]]; pulses=pulse),
-                position(dev, dev.axes[axes[2]]; pulses=pulse),
-                position(dev, dev.axes[axes[3]]; pulses=pulse)]
+        return [devposition(dev, dev.axes[axes[1]]; pulses=pulse),
+                devposition(dev, dev.axes[axes[2]]; pulses=pulse),
+                devposition(dev, dev.axes[axes[3]]; pulses=pulse)]
     end
 end
 
 AbstractActuators.positionX(dev::NRoboClient; pulses=false) =
-    position(dev, "x"; pulses=pulses)
+    devposition(dev, "x"; pulses=pulses)
 AbstractActuators.positionY(dev::NRoboClient; pulses=false) =
-    position(dev, "y"; pulses=pulses)
+    devposition(dev, "y"; pulses=pulses)
 AbstractActuators.positionZ(dev::NRoboClient; pulses=false) =
-    position(dev, "z"; pulses=pulses)
+    devposition(dev, "z"; pulses=pulses)
 
 AbstractActuators.setreference(dev::NRoboClient, ax, mm=0; pulses=false) =
     dev.server["set_reference"](string(ax), mm, pulses)
