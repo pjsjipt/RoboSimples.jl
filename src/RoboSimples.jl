@@ -21,10 +21,10 @@ end
 AbstractActuators.numaxes(dev::NRoboClient) = 3
 AbstractActuators.numaxes(::Type{NRoboClient}) = 3
 
-function NRoboClient(ip="192.168.0.140", port=9543)
+function NRoboClient(ip="192.168.0.140", port=9543; axes=["x", "y", "z"])
     xmlrpc = pyimport("xmlrpc.client")
     server = xmlrpc.ServerProxy("http://$ip:$port")
-    NRoboClient(ip, port, server, ["x", "y", "z"])
+    NRoboClient(ip, port, server, axes)
 end
 
 
@@ -32,7 +32,7 @@ AbstractActuators.move(dev::NRoboClient, ax, mm; r=false) =
     dev.server["move"](mm, string(ax), r)
 
 AbstractActuators.move(dev::NRoboClient, ax::Integer, mm; r=false) =
-    move(dev, mm, dev.axes[ax]; r=r)
+    move(dev, dev.axes[ax], mm; r=r)
 
 function AbstractActuators.move(dev::NRoboClient, axes::AbstractVector,
                                 x=AbstractVector; r=false)
@@ -43,6 +43,10 @@ function AbstractActuators.move(dev::NRoboClient, axes::AbstractVector,
     end
     return
 end
+
+AbstractActuators.moveto(dev::NRoboClient, x::AbstractVector) =
+    move(dev, dev.axes, x)
+
 
 AbstractActuators.moveX(dev::NRoboClient, mm) = dev.server["moveX"](mm)
 AbstractActuators.moveY(dev::NRoboClient, mm) = dev.server["moveY"](mm)
