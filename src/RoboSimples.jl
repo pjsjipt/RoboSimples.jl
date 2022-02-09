@@ -12,6 +12,7 @@ export numaxes, axesnames
 
 
 struct NRoboClient <: AbstractCartesianRobot
+    devname::String
     ip::String
     port::Int32
     server::PyObject
@@ -21,10 +22,10 @@ end
 AbstractActuators.numaxes(dev::NRoboClient) = 3
 AbstractActuators.axesnames(dev::NRoboClient) = dev.axes
 
-function NRoboClient(ip="192.168.0.140", port=9543; axes=["x", "y", "z"])
+function NRoboClient(devname, ip="192.168.0.140", port=9543; axes=["x", "y", "z"])
     xmlrpc = pyimport("xmlrpc.client")
     server = xmlrpc.ServerProxy("http://$ip:$port")
-    NRoboClient(ip, port, server, axes)
+    NRoboClient(devname, ip, port, server, axes)
 end
 
 
