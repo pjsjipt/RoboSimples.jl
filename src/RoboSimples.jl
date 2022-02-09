@@ -8,7 +8,7 @@ export move, moveX, moveY, moveZ, devposition, setreference
 export rmove, rmoveX, rmoveY, rmoveZ
 export positionX, positionY, positionZ
 export setreferenceX, setreferenceY, setreferenceZ
-export numaxes 
+export numaxes, axesnames
 
 
 struct NRoboClient <: AbstractCartesianRobot
@@ -19,7 +19,7 @@ struct NRoboClient <: AbstractCartesianRobot
 end
 
 AbstractActuators.numaxes(dev::NRoboClient) = 3
-AbstractActuators.numaxes(::Type{NRoboClient}) = 3
+AbstractActuators.axesnames(dev::NRoboClient) = dev.axes
 
 function NRoboClient(ip="192.168.0.140", port=9543; axes=["x", "y", "z"])
     xmlrpc = pyimport("xmlrpc.client")
