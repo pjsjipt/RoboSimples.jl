@@ -8,7 +8,7 @@ export move, moveX, moveY, moveZ, devposition, setreference
 export rmove, rmoveX, rmoveY, rmoveZ
 export positionX, positionY, positionZ
 export setreferenceX, setreferenceY, setreferenceZ
-export numaxes, axesnames
+export numaxes, axesnames, moveto
 
 
 struct NRoboClient <: AbstractCartesianRobot
@@ -19,7 +19,7 @@ struct NRoboClient <: AbstractCartesianRobot
     axes::Vector{String}
 end
 
-AbstractActuators.numaxes(dev::NRoboClient) = 3
+AbstractActuators.numaxes(dev::NRoboClient) = length(dev.axes)
 AbstractActuators.axesnames(dev::NRoboClient) = dev.axes
 
 function NRoboClient(devname, ip="192.168.0.140", port=9543; axes=["x", "y", "z"])
@@ -40,13 +40,13 @@ function AbstractActuators.move(dev::NRoboClient, axes::AbstractVector,
     ndof = length(axes)
 
     for i in 1:ndof
-        move(dev, x[i], axes[i]; r=r)
+        move(dev, axes[i], x[i]; r=r)
     end
     return
 end
 
-AbstractActuators.moveto(dev::NRoboClient, x::AbstractVector) =
-    move(dev, dev.axes, x)
+AbstractActuators.moveto(dev::NRoboClient, x) =
+    move(dev, dev.axes, x, r=false)
 
 
 AbstractActuators.moveX(dev::NRoboClient, mm) = dev.server["moveX"](mm)
