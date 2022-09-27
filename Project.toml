@@ -4,7 +4,7 @@ authors = ["Paulo Jabardo <pjabardo@ipt.br>"]
 version = "0.1.0"
 
 [deps]
-AbstractActuators = "846a0f3d-20fc-416e-8846-8178ce77b5b3"
+DAQCore = "7b03aed3-9854-4651-ba28-76b88bef8818"
 PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
 Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
 
