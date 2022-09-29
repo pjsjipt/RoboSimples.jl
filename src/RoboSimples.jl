@@ -58,13 +58,8 @@ rmoveY(dev::NRoboClient, mm) = dev.server["rmoveY"](mm)
 rmoveZ(dev::NRoboClient, mm) = dev.server["rmoveZ"](mm)
 
 import Base
-function DAQCore.devposition(dev::NRoboClient; pulses=false)
-    x = dev.server["position"]("x", pulses)
-    y = dev.server["position"]("y", pulses)
-    z = dev.server["position"]("z", pulses)
-
-    return Dict{String,Float64}("x"=>x, "y"=>y, "z"=>z)
-end
+DAQCore.devposition(dev::NRoboClient; pulses=false) = 
+    [dev.server["position"](ax, pulses) for ax in dev.axes]
 
 DAQCore.devposition(dev::NRoboClient, ax; pulses=false) =
     dev.server["position"](string(ax), pulses)
