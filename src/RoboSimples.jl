@@ -45,7 +45,7 @@ function move(dev::NRoboClient, axes::AbstractVector,
     return
 end
 
-moveto!(dev::NRoboClient, x) =
+DAQCore.moveto!(dev::NRoboClient, x) =
     move(dev, dev.axes, x, r=false)
 
 
